@@ -9,6 +9,7 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require('discord.js');
+    require('./server.js');
 
 // =============================================
 // ⚙️  CONFIGURATION
