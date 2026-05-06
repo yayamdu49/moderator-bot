@@ -10,99 +10,7 @@ const {
   GatewayIntentBits,
 } = require('discord.js');
 
-const express = require("express");
-const app = express();
 
-app.use(express.json());
-
-// =======================
-// 🔥 CONFIG DYNAMIQUE
-let config = {
-  antiSpam: true,
-  antiLien: false,
-};
-
-// 📊 DATA
-let logs = [];
-let sanctions = [];
-
-
-// =======================
-// 💬 EVENTS
-
-client.on("messageCreate", (message) => {
-  if (message.author.bot) return;
-
-  // LOG
-  logs.push(`📨 ${message.author.tag}: ${message.content}`);
-
-  // Anti spam (simple)
-  if (config.antiSpam && message.content.length > 200) {
-    message.delete().catch(() => {});
-
-    sanctions.push({
-      user: message.author.id,
-      reason: "spam",
-      date: Date.now(),
-    });
-
-    logs.push(`🚨 ${message.author.tag} sanctionné (spam)`);
-  }
-});
-
-// =======================
-// 🌐 API EXPRESS
-
-app.get("/", (req, res) => {
-  res.send("✅ Bot + Panel en ligne");
-});
-
-// 📊 Stats
-app.get("/stats", (req, res) => {
-  res.json({
-    sanctions: sanctions.length,
-    logs: logs.length,
-  });
-});
-
-// ⚙️ Config
-app.get("/config", (req, res) => {
-  res.json(config);
-});
-
-app.post("/config", (req, res) => {
-  config = req.body;
-  logs.push("⚙️ Config modifiée");
-  res.json({ success: true });
-});
-
-// 🚨 Logs
-app.get("/logs", (req, res) => {
-  res.json(logs.slice(-20));
-});
-
-// 👤 Historique user
-app.get("/user/:id", (req, res) => {
-  const userId = req.params.id;
-
-  const userSanctions = sanctions.filter(s => s.user === userId);
-
-  res.json({
-    total: userSanctions.length,
-    sanctions: userSanctions,
-  });
-});
-
-// =======================
-// 🚀 LANCEMENT
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("🌐 Panel lancé sur " + PORT);
-});
-
-client.login(process.env.TOKEN);
 
 // =============================================
 // ⚙️  CONFIGURATION
@@ -1174,5 +1082,100 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     try { await newState.disconnect('Membre muté — accès vocal interdit'); } catch (_) {}
   }
 });
+
+
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+// =======================
+// 🔥 CONFIG DYNAMIQUE
+let config = {
+  antiSpam: true,
+  antiLien: false,
+};
+
+// 📊 DATA
+let logs = [];
+let sanctions = [];
+
+
+// =======================
+// 💬 EVENTS
+
+client.on("messageCreate", (message) => {
+  if (message.author.bot) return;
+
+  // LOG
+  logs.push(`📨 ${message.author.tag}: ${message.content}`);
+
+  // Anti spam (simple)
+  if (config.antiSpam && message.content.length > 200) {
+    message.delete().catch(() => {});
+
+    sanctions.push({
+      user: message.author.id,
+      reason: "spam",
+      date: Date.now(),
+    });
+
+    logs.push(`🚨 ${message.author.tag} sanctionné (spam)`);
+  }
+});
+
+// =======================
+// 🌐 API EXPRESS
+
+app.get("/", (req, res) => {
+  res.send("✅ Bot + Panel en ligne");
+});
+
+// 📊 Stats
+app.get("/stats", (req, res) => {
+  res.json({
+    sanctions: sanctions.length,
+    logs: logs.length,
+  });
+});
+
+// ⚙️ Config
+app.get("/config", (req, res) => {
+  res.json(config);
+});
+
+app.post("/config", (req, res) => {
+  config = req.body;
+  logs.push("⚙️ Config modifiée");
+  res.json({ success: true });
+});
+
+// 🚨 Logs
+app.get("/logs", (req, res) => {
+  res.json(logs.slice(-20));
+});
+
+// 👤 Historique user
+app.get("/user/:id", (req, res) => {
+  const userId = req.params.id;
+
+  const userSanctions = sanctions.filter(s => s.user === userId);
+
+  res.json({
+    total: userSanctions.length,
+    sanctions: userSanctions,
+  });
+});
+
+// =======================
+// 🚀 LANCEMENT
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("🌐 Panel lancé sur " + PORT);
+});
+
+client.login(process.env.TOKEN);
 
 client.login(CONFIG.TOKEN);
