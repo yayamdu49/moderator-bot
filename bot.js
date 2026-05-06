@@ -26,20 +26,6 @@ let config = {
 let logs = [];
 let sanctions = [];
 
-// =======================
-// 🤖 BOT DISCORD
-
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-  ],
-});
-
-client.on("ready", () => {
-  console.log(`✅ Connecté en tant que ${client.user.tag}`);
-});
 
 // =======================
 // 💬 EVENTS
