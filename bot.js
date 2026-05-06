@@ -10,11 +10,15 @@ const {
   GatewayIntentBits,
 } = require('discord.js');
 
-
-
-
+const express = require("express");
 const cors = require("cors");
+
+// 🔥 CRÉATION APP AVANT TOUT
+const app = express();
+
+app.use(express.json());
 app.use(cors());
+
 
 
 
