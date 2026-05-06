@@ -1,12 +1,18 @@
 {
   "name": "discordbot",
   "version": "1.0.0",
-  "description": "Bot modérateur Discord avec suspension automatique",
+  "description": "Bot Discord modérateur + Dashboard",
   "main": "bot.js",
   "scripts": {
     "start": "node bot.js"
   },
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "discord.js": "^14.14.1",
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "socket.io": "^4.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
