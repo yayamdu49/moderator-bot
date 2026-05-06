@@ -1094,8 +1094,6 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
 });
 
 
-const express = require("express");
-const app = express();
 
 app.use(express.json());
 
