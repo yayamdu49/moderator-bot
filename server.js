@@ -15,7 +15,7 @@ const server = http.createServer(app);
 const io     = new Server(server, { cors: { origin: '*' } });
 
 // ── Config ──────────────────────────────────────────
-const PORT         = process.env.DASHBOARD_PORT || 3001;
+const PORT         = process.env.PORT || 3001;
 const DASHBOARD_KEY = process.env.DASHBOARD_KEY  || 'changeme123'; // clé API secrète
 const DATA_FILE    = path.join(__dirname, 'data.json');
 
