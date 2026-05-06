@@ -11,6 +11,54 @@ const {
 } = require('discord.js');
     require('./server.js');
 
+
+
+
+const express = require("express");
+const app = express();
+
+app.use(express.json());
+
+// =======================
+// STOCKAGE SIMPLE (temporaire)
+let config = {
+  antiSpam: true,
+  antiLien: false,
+};
+
+let logs = [];
+let sanctions = [];
+
+// =======================
+// API
+
+app.get("/stats", (req, res) => {
+  res.json({
+    sanctions: sanctions.length,
+    logs: logs.length,
+  });
+});
+
+app.get("/config", (req, res) => {
+  res.json(config);
+});
+
+app.post("/config", (req, res) => {
+  config = req.body;
+  logs.push("Config modifiée");
+  res.json({ success: true });
+});
+
+app.get("/logs", (req, res) => {
+  res.json(logs.slice(-20));
+});
+
+// =======================
+
+app.listen(3000, () => {
+  console.log("Panel web lancé");
+});
+
 // =============================================
 // ⚙️  CONFIGURATION
 // =============================================
