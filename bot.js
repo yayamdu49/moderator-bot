@@ -10,6 +10,19 @@ const {
   GatewayIntentBits,
 } = require('discord.js');
 
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB68DsleAK4spgkv3USxO6b13uFxDt8SZs",
+  authDomain: "moderator-bot-32b2c.firebaseapp.com",
+  projectId: "moderator-bot-32b2c",
+  storageBucket: "moderator-bot-32b2c.firebasestorage.app",
+  messagingSenderId: "788120785555",
+  appId: "1:788120785555:web:5f36831bbe6ed047237366"
+};
+
+const { initializeApp } = require("firebase/app");
+const { getFirestore, doc, setDoc, addDoc, collection } = require("firebase/firestore");
+
 const express = require("express");
 const cors = require("cors");
 
@@ -430,12 +443,28 @@ client.on('guildCreate', async (guild) => {
 // ════════════════════════════════════════════
 //  MESSAGES
 // ════════════════════════════════════════════
-client.on('messageCreate', async (message) => {
+client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
-  if (!message.content)   return;
 
-  const bas = message.content.trim().toLowerCase();
+  // LOG
+  await addDoc(collection(db, "logs"), {
+    user: message.author.tag,
+    message: message.content,
+    date: Date.now()
+  });
 
+  // Anti spam
+  if (message.content.length > 200) {
+
+    await addDoc(collection(db, "sanctions"), {
+      user: message.author.id,
+      reason: "spam",
+      date: Date.now()
+    });
+
+    message.delete().catch(() => {});
+  }
+});
   // ═══════════════════════════
   //  COMMANDES !
   // ═══════════════════════════
