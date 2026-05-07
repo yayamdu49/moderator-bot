@@ -440,6 +440,8 @@ client.on('guildCreate', async (guild) => {
   await getRoleMute(guild);
 });
 
+client.on('messageCreate', async (message) => {
+
 // ════════════════════════════════════════════
 //  MESSAGES
 // ════════════════════════════════════════════
@@ -756,7 +758,7 @@ if (estSpam) {
       ).setTimestamp();
     await notifChef(embed);
   }
-
+});
 
 // ════════════════════════════════════════════
 //  SYSTÈME D'APPEAL (contestations de sanction)
