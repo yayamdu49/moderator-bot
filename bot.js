@@ -443,28 +443,7 @@ client.on('guildCreate', async (guild) => {
 // ════════════════════════════════════════════
 //  MESSAGES
 // ════════════════════════════════════════════
-client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
 
-  // LOG
-  await addDoc(collection(db, "logs"), {
-    user: message.author.tag,
-    message: message.content,
-    date: Date.now()
-  });
-
-  // Anti spam
-  if (message.content.length > 200) {
-
-    await addDoc(collection(db, "sanctions"), {
-      user: message.author.id,
-      reason: "spam",
-      date: Date.now()
-    });
-
-    message.delete().catch(() => {});
-  }
-});
   // ═══════════════════════════
   //  COMMANDES !
   // ═══════════════════════════
@@ -668,8 +647,22 @@ client.on("messageCreate", async (message) => {
   if (estInvincible(message.member)) return;
 
   // 1. Anti-spam
-  const estSpam = await verifierSpam(message);
-  if (estSpam) return;
+const estSpam = config.antiSpam
+  ? await verifierSpam(message)
+  : false;
+
+if (estSpam) {
+
+  sanctions.push({
+    user: message.author.id,
+    reason: "spam",
+    date: Date.now(),
+  });
+
+  logs.push(`🚨 ${message.author.tag} sanctionné pour spam`);
+
+  return;
+}
 
   // 2. Insultes
   const insulteDetectee = detecterInsulte(message.content);
@@ -763,7 +756,7 @@ client.on("messageCreate", async (message) => {
       ).setTimestamp();
     await notifChef(embed);
   }
-});
+
 
 // ════════════════════════════════════════════
 //  SYSTÈME D'APPEAL (contestations de sanction)
@@ -1212,7 +1205,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("🌐 Panel lancé sur " + PORT);
 });
-
-client.login(process.env.TOKEN);
 
 client.login(CONFIG.TOKEN);
